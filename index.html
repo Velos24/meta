@@ -1,68 +1,669 @@
 <!DOCTYPE html>
-<html lang="ar" dir="ltr">
+<html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>إدخال بيانات</title>
-    <!-- تضمين مكتبة Firebase -->
-    <script src="https://www.gstatic.com/firebasejs/7.20.0/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/7.20.0/firebase-database.js"></script>
-    <!-- ربط ملف CSS -->
-    <link rel="stylesheet" href="style.css">
+    <meta name="description" content="بحث في فيزياء الوعي، المادة، وحقيقة الدين كقانون كوني.">
+    <meta name="author" content="عبدالله الموسوي">
+    <title>الرنين الكوني: حقيقة الدين كقانون فيزيائي</title>
+    
+    <!-- استدعاء الخطوط العربية -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,400&family=Tajawal:wght@200;300;400;500;700;900&display=swap" rel="stylesheet">
+    
+    <!-- مكتبة الأيقونات -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <style>
+        :root {
+            --bg-dark: #020205;
+            --bg-card: rgba(20, 25, 40, 0.8);
+            --gold: #D4AF37;
+            --cyan: #00bcd4;
+            --text-main: #f0f0f5;
+            --text-muted: #a0a0b5;
+            --font-head: 'Tajawal', sans-serif;
+            --font-body: 'Tajawal', sans-serif;
+            --font-quote: 'Amiri', serif;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            scroll-behavior: smooth;
+        }
+
+        body {
+            background-color: var(--bg-dark);
+            background-image: 
+                radial-gradient(circle at 15% 50%, rgba(0, 188, 212, 0.08) 0%, transparent 25%),
+                radial-gradient(circle at 85% 30%, rgba(212, 175, 55, 0.06) 0%, transparent 25%);
+            color: var(--text-main);
+            font-family: var(--font-body);
+            line-height: 1.9;
+            overflow-x: hidden;
+        }
+
+        /* شريط القراءة العلوي */
+        .reading-progress-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: transparent;
+            z-index: 1000;
+        }
+
+        .reading-progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, var(--cyan), var(--gold));
+            width: 0%;
+            box-shadow: 0 0 10px var(--cyan);
+        }
+
+        /* حاوية المحتوى */
+        .container {
+            max-width: 950px;
+            margin: 0 auto;
+            padding: 2rem;
+            position: relative;
+        }
+
+        /* العناوين */
+        header {
+            min-height: 95vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            position: relative;
+            padding-bottom: 4rem;
+        }
+
+        .main-title {
+            font-size: 4rem;
+            font-weight: 900;
+            background: linear-gradient(to bottom, #fff, #a0a0a0);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 1rem;
+            letter-spacing: -1px;
+            animation: fadeInDown 1.5s ease-out;
+        }
+
+        .sub-title {
+            font-size: 1.5rem;
+            color: var(--gold);
+            font-weight: 300;
+            margin-bottom: 3rem;
+            opacity: 0;
+            animation: fadeInDown 1.5s ease-out 0.5s forwards;
+        }
+
+        .author-info {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.5rem;
+            margin-top: 2rem;
+            font-family: var(--font-head);
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            opacity: 0;
+            animation: fadeInUp 1.5s ease-out 1s forwards;
+        }
+
+        .telegram-link {
+            color: var(--cyan);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: color 0.3s;
+        }
+
+        .telegram-link:hover {
+            color: var(--gold);
+        }
+
+        /* الأقسام والنظريات */
+        .theory-section {
+            margin-bottom: 8rem;
+            opacity: 0;
+            transform: translateY(40px);
+            transition: all 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            position: relative;
+        }
+
+        .theory-section.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* الخط الجانبي المزخرف */
+        .theory-section::before {
+            content: '';
+            position: absolute;
+            right: -20px;
+            top: 0;
+            height: 100%;
+            width: 2px;
+            background: linear-gradient(to bottom, var(--gold), transparent);
+            opacity: 0.3;
+        }
+
+        .section-header {
+            display: flex;
+            align-items: baseline;
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .section-number {
+            font-family: 'Times New Roman', serif;
+            font-size: 4rem;
+            color: rgba(255, 255, 255, 0.05);
+            font-weight: bold;
+            line-height: 1;
+        }
+
+        .section-title {
+            font-size: 2rem;
+            color: var(--cyan);
+            font-weight: 700;
+        }
+
+        /* بطاقات المحتوى */
+        .content-card {
+            background: var(--bg-card);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 16px;
+            padding: 3rem;
+            backdrop-filter: blur(12px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.4);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .content-card p {
+            font-size: 1.25rem;
+            color: var(--text-main);
+            margin-bottom: 1.5rem;
+            text-align: justify;
+        }
+
+        /* صناديق الاقتباس والآيات */
+        .proof-box {
+            background: rgba(0, 0, 0, 0.3);
+            border-right: 3px solid;
+            padding: 1.5rem;
+            margin: 2rem 0;
+            border-radius: 8px;
+        }
+
+        .proof-box.science {
+            border-color: var(--cyan);
+        }
+
+        .proof-box.religion {
+            border-color: var(--gold);
+        }
+
+        .proof-header {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            font-weight: bold;
+            margin-bottom: 1rem;
+            font-size: 1.1rem;
+        }
+
+        .proof-text {
+            font-size: 1.1rem;
+            color: var(--text-muted);
+            font-style: italic;
+        }
+
+        .quran-text {
+            font-family: var(--font-quote);
+            font-size: 1.4rem;
+            color: #fff;
+            line-height: 1.8;
+        }
+
+        /* الأسئلة البلاغية */
+        .rhetorical-q {
+            font-size: 1.5rem;
+            text-align: center;
+            color: var(--gold);
+            margin: 3rem 0;
+            font-family: var(--font-quote);
+            position: relative;
+            padding: 1rem;
+        }
+        
+        .rhetorical-q::before, .rhetorical-q::after {
+            content: '♦';
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            margin: 0 10px;
+            vertical-align: middle;
+        }
+
+        /* تمييز النصوص المهمة */
+        .highlight {
+            color: var(--cyan);
+            font-weight: bold;
+        }
+
+        .concept-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .concept-item {
+            background: rgba(255, 255, 255, 0.03);
+            padding: 1.5rem;
+            border-radius: 12px;
+            transition: transform 0.3s;
+        }
+
+        .concept-item:hover {
+            transform: translateY(-5px);
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        /* تأثيرات الخلفية المتحركة */
+        .particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            pointer-events: none;
+            opacity: 0.4;
+        }
+
+        /* تذييل */
+        footer {
+            text-align: center;
+            padding: 4rem 1rem;
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            border-top: 1px solid rgba(255,255,255,0.05);
+            background: #010103;
+        }
+
+        /* Animations */
+        @keyframes fadeInDown {
+            from { opacity: 0; transform: translateY(-30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes pulse-glow {
+            0% { box-shadow: 0 0 5px var(--gold); }
+            50% { box-shadow: 0 0 20px var(--gold); }
+            100% { box-shadow: 0 0 5px var(--gold); }
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .main-title { font-size: 2.5rem; }
+            .section-title { font-size: 1.6rem; }
+            .content-card { padding: 1.5rem; }
+            .theory-section::before { display: none; }
+        }
+    </style>
 </head>
 <body>
-    <div class="container">
-        <div class="logo">
-            <img src="logo.png" alt="Logo">
-        </div>
-        <form id="dataForm" class="login-form">
-            <input type="text" id="username" placeholder="اسم المستخدم" required>
-            <input type="password" id="password" placeholder="كلمة المرور" required>
-            <button type="submit">إرسال</button>
-        </form>
+
+    <div class="reading-progress-container">
+        <div class="reading-progress-bar" id="progressBar"></div>
     </div>
 
+    <canvas class="particles" id="particleCanvas"></canvas>
+
+    <header>
+        <div style="width: 120px; height: 120px; border-radius: 50%; border: 2px solid var(--gold); display: flex; align-items: center; justify-content: center; margin-bottom: 2rem; animation: pulse-glow 3s infinite;">
+            <i data-lucide="atom" color="#D4AF37" size="64"></i>
+        </div>
+        <h1 class="main-title">الفيزياء الإلهية</h1>
+        <h2 class="sub-title">من الذرة إلى الخالق: إعادة تعريف الوجود والدين</h2>
+        
+        <div class="author-info">
+            <span>الباحث: عبدالله الموسوي</span>
+            <a href="https://t.me/i_8_k313" class="telegram-link" target="_blank">
+                <i data-lucide="send" size="16"></i> @i_8_k313
+            </a>
+            <span style="font-size: 0.8rem; color: #555;">تاريخ النشر: 2026/1/4</span>
+        </div>
+        
+        <div style="position: absolute; bottom: 30px; animation: bounce 2s infinite;">
+            <i data-lucide="chevrons-down" color="#00bcd4" size="32"></i>
+        </div>
+    </header>
+
+    <div class="container">
+
+        <!-- القسم 1: التكوين -->
+        <section class="theory-section">
+            <div class="section-header">
+                <span class="section-number">01</span>
+                <h3 class="section-title">التكوين الحيوي: الكهرباء والماء</h3>
+            </div>
+            <div class="content-card">
+                <p>
+                    لنبدأ من الحقائق المجردة. إذا نظرنا إلى الإنسان تحت المجهر الدقيق، بعيداً عن كونه "لحماً ودماً"، سنجد أنه عبارة عن شبكة معقدة من الإشارات الكهربائية التي تسبح في وسط مائي. الدماغ البشري، القلب، والجهاز العصبي، كلها تعمل بنظام "الكهرباء الحيوية" (Bio-electricity).
+                </p>
+                <div class="rhetorical-q">
+                    إذا كان الجسد عبارة عن كهرباء وماء، فهل يُعقل ألا يتأثر بالموجات المحيطة به؟
+                </div>
+                <p>
+                    الفيزياء تخبرنا أن الماء هو أسرع وأدق ناقل للترددات، وأن الكهرباء تتأثر بالمجالات المغناطيسية والصوتية. إذن، نحن لسنا كتل صلبة، نحن "هوائيات" (Antennas) بشرية تستقبل وترسل الترددات في كل لحظة.
+                </p>
+                
+                <div class="proof-box science">
+                    <div class="proof-header"><i data-lucide="microscope" color="#00bcd4"></i> حقيقة علمية</div>
+                    <p class="proof-text">كل إيعاز عصبي هو تيار كهربائي. الماء داخل الخلايا (Intracellular fluid) يشكل 70% من أجسامنا، وهو المسؤول عن نقل هذه الإشارات. أي اضطراب في ترددات الماء يؤدي إلى اضطراب في عمل الخلية.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- القسم 2: هندسة الصوت -->
+        <section class="theory-section">
+            <div class="section-header">
+                <span class="section-number">02</span>
+                <h3 class="section-title">هندسة الصوت: الكلمة تُشكل المادة</h3>
+            </div>
+            <div class="content-card">
+                <p>
+                    هنا ننتقل إلى المتغير الأخطر: <strong>الصوت</strong>. الصوت ليس مجرد ضوضاء نسمعها بالأذن، بل هو طاقة ميكانيكية ذات تردد محدد (Frequency). عندما يصطدم الصوت بالماء (الذي هو أصل تكوينك)، فإنه يعيد ترتيب جزيئاته هندسياً.
+                </p>
+                <p>
+                    العلم أثبت عبر "السيماتكس" (Cymatics) أن لكل تردد شكلاً هندسياً. الترددات المتناغمة تخلق أشكالاً هندسية بديعة وصحية، والترددات العشوائية تخلق فوضى وتشوهاً.
+                </p>
+
+                <div class="proof-box religion">
+                    <div class="proof-header"><i data-lucide="book-open" color="#D4AF37"></i> إشارة قرآنية</div>
+                    <p class="quran-text">"وَجَعَلْنَا مِنَ الْمَاءِ كُلَّ شَيْءٍ حَيٍّ ۖ أَفَلَا يُؤْمِنُونَ"</p>
+                    <p class="proof-text">بما أنك "ماء" حي، فأنت تتشكل حرفياً بكل كلمة تنطقها أو تسمعها.</p>
+                </div>
+
+                <div class="concept-grid">
+                    <div class="concept-item">
+                        <strong style="color: var(--cyan)">علم الطاقة الحقيقي</strong>
+                        <p style="font-size: 0.9rem; margin-top: 0.5rem">ليس شعوذة أو خيالاً، بل هو فيزياء الترددات وتأثير الفوتونات على الخلايا. "الطاقة" التي نتحدث عنها هي قابلية الذرات للتأثر بالمحيط.</p>
+                    </div>
+                    <div class="concept-item">
+                        <strong style="color: var(--gold)">مفهوم البركة</strong>
+                        <p style="font-size: 0.9rem; margin-top: 0.5rem">البركة ليست "ضوءاً سحرياً"، بل هي تردد إيجابي عالي الكثافة (مثل تردد البسملة) يغير الحالة الفيزيائية للمادة لتصبح أكثر نفعاً واستدامة.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- القسم 3: الموسيقى والحلال والحرام -->
+        <section class="theory-section">
+            <div class="section-header">
+                <span class="section-number">03</span>
+                <h3 class="section-title">فلسفة التحريم: دقة الترددات لا العبثية</h3>
+            </div>
+            <div class="content-card">
+                <p>
+                    لماذا حُرمت بعض أنواع الموسيقى وحُللت أخرى؟ ولماذا يُحرم قراءة القرآن بأطوار غنائية معينة؟ هل هو تشدد ديني؟ أم حماية فيزيائية؟
+                </p>
+                <p>
+                    الأمر كله يتعلق بالتردد. السيد السيستاني (دام ظله) عندما يصف الموسيقى المحرمة بأنها "ما يناسب مجالس اللهو والطرب"، فهو يشير بدقة متناهية إلى <strong>نوع التردد</strong> الذي يثير الغريزة الحيوانية ويغيب العقل.
+                </p>
+                
+                <div class="highlight-box" style="border-right: 3px solid var(--cyan); padding-right: 1rem; margin: 1.5rem 0;">
+                    <p>
+                        <strong>التحليل الفيزيائي:</strong> التردد "الطربي" الراقص يُحدث تغييراً في كيمياء الدماغ (إفراز مفرط للدوبامين بشكل غير متزن) ويؤثر على ذرات الجسد ليجعلها في حالة "هيجان" وعدم استقرار. الدين هنا يتدخل كـ "فيزيائي خبير" ليمنعك من تعريض ذراتك لتردد يفسد توازنها.
+                    </p>
+                </div>
+
+                <p>
+                    لذلك، اختلاف الأطوار الصوتية (بين تلاوة خاشعة وغناء ماجن) هو اختلاف في "الموجة". الموجة الخاشعة (Alpha Waves) تدخل الدماغ في حالة سكون واتصال، بينما الموجة الصاخبة تشتت الاتصال.
+                </p>
+            </div>
+        </section>
+
+        <!-- القسم 4: الترابط الكوني -->
+        <section class="theory-section">
+            <div class="section-header">
+                <span class="section-number">04</span>
+                <h3 class="section-title">نظرية الوحدة: الشبكة الكونية</h3>
+            </div>
+            <div class="content-card">
+                <p>
+                    نحن نعيش في كون نجهل 99.99% من قوانينه. وما اكتشفناه لا يتجاوز قشرة الذرة. نظريتي تقول: <strong>"كل ذرة في هذا الكون مرتبطة بكل ذرة أخرى"</strong>.
+                </p>
+                <div class="rhetorical-q">
+                    هل تظن أنك منفصل عن النجوم أو عن ذرات التربة؟
+                </div>
+                <p>
+                    الفيزياء الكمية تثبت ذلك عبر "التشابك الكمي" (Quantum Entanglement). الجسيمات تتواصل لحظياً مهما كانت المسافة. هذا يعني أن كل فعل، كل كلمة، كل شعور تطلقه، يسري في "الشبكة الكونية" ويؤثر في الكل، ثم يرتد إليك.
+                </p>
+            </div>
+        </section>
+
+        <!-- القسم 5: الإيمان والقدر -->
+        <section class="theory-section">
+            <div class="section-header">
+                <span class="section-number">05</span>
+                <h3 class="section-title">معادلة القدر: الإيمان كقوة فيزيائية</h3>
+            </div>
+            <div class="content-card">
+                <p>
+                    الإيمان والوعي ليسا مجرد حالات نفسية، بل هما قوى محركة للواقع.
+                </p>
+                <ul style="list-style: none; padding: 0;">
+                    <li style="margin-bottom: 1.5rem; background: rgba(0,0,0,0.2); padding: 1rem; border-radius: 8px;">
+                        <strong style="color: var(--gold);">الإيمان = خلق الطريق:</strong> في ميكانيكا الكم، الجسيم لا يتخذ مساراً إلا عند "المراقبة". إيمانك القوي هو الذي يحول "الاحتمال" إلى "واقع ملموس". بدون إيمان، الطريق غير موجود أصلاً.
+                    </li>
+                    <li style="margin-bottom: 1.5rem; background: rgba(0,0,0,0.2); padding: 1rem; border-radius: 8px;">
+                        <strong style="color: var(--cyan);">الوعي = انعدام المقاومة:</strong> الوعي هو أن تتحرك ذراتك بانسجام مع الكون (Flow State)، مما يقلل الاحتكاك وهدر الطاقة.
+                    </li>
+                </ul>
+
+                <p>
+                    <strong>التوفيق والرصيد الذراتي:</strong> أعمالك، عباداتك، وتردداتك الإيجابية لا تضيع. إنها تتخزن كـ "طاقة كامنة" (Potential Energy) في رصيدك الكوني. عند الأزمات، تتحول هذه الطاقة تلقائياً إلى "طاقة حركية" تدفع عنك السوء. هذا هو التفسير الفيزيائي لـ "التوفيق" و "اللطف الخفي".
+                </p>
+            </div>
+        </section>
+
+        <!-- القسم 6: الذنوب والتوبة والطبع على القلوب -->
+        <section class="theory-section">
+            <div class="section-header">
+                <span class="section-number">06</span>
+                <h3 class="section-title">الترموديناميكا الروحية: الذنب والتوبة</h3>
+            </div>
+            <div class="content-card">
+                <p>
+                    الله لا يسحب منك التوفيق انتقاماً، حاشاه. بل القوانين الكونية تعمل بدقة:
+                    <br>
+                    <strong>المعصية = تردد سلبي = تشوه في المجال الذري المحيط بك = تغيير المسارات (سلب التوفيق).</strong>
+                </p>
+                <p>
+                    إذن، ما هي التوبة؟ التوبة ليست مجرد كلمة، بل هي عملية <strong>"تحويل طاقة"</strong> (Transmutation). التوبة الصادقة تولد تردداً هائلاً قادراً على قلب قطبية الذرات من السالب إلى الموجب.
+                </p>
+
+                <div class="proof-box religion">
+                    <div class="proof-header"><i data-lucide="book-open" color="#D4AF37"></i> القانون القرآني</div>
+                    <p class="quran-text">"إِلَّا مَنْ تَابَ وَآمَنَ وَعَمِلَ عَمَلًا صَالِحًا فَأُولَئِكَ يُبَدِّلُ اللَّهُ سَيِّئَاتِهِمْ حَسَنَاتٍ"</p>
+                    <p class="proof-text">لاحظ كلمة "يُبدّل": إنها عملية كيميائية/فيزيائية لتحويل نوع الطاقة السيئة نفسها إلى طاقة حسنة.</p>
+                </div>
+
+                <h4 style="color: var(--text-muted); margin-top: 2rem;">متى يُغلق الباب؟ (الختم على القلوب)</h4>
+                <p>
+                    الله لا يغلق باب التوبة، بل الإنسان هو من يصل بطاقته السلبية إلى "نقطة اللاعودة" (Event Horizon). عندما تتشبع ذرات القلب بالسواد (الطاقة السلبية الكثيفة)، يتغير اتجاه المجال المغناطيسي للروح تماماً نحو الهاوية، بحيث يصبح استقبال تردد "التوبة" مستحيلاً فيزيائياً.
+                    <br>
+                    {كَلَّا ۖ بَلْ ۜ رَانَ عَلَىٰ قُلُوبِهِم} - الران هو الصدأ أو الغشاوة التي تمنع اختراق نور الحق.
+                </p>
+            </div>
+        </section>
+
+        <!-- القسم 7: الدين هو العلم الكوني -->
+        <section class="theory-section">
+            <div class="section-header">
+                <span class="section-number">07</span>
+                <h3 class="section-title">فرضية العلم الكامل: الدين هو الفيزياء</h3>
+            </div>
+            <div class="content-card">
+                <div class="rhetorical-q">
+                    صراع الدين والعلم؟ هو صراع الجهل بالجوهر.
+                </div>
+                <p>
+                    الدين ليس اختبار طاعة عمياء، بل هو <strong>"كتالوج التشغيل"</strong> لهذا الكون. كل تشريع فقهي (حلال وحرام) هو قانون فيزيائي لحمايتك.
+                </p>
+                <p>
+                    <strong>الفرضية الجدلية:</strong> لو افترضنا أن البشرية لم ينزل عليها دين، ولكنها وصلت إلى العلم الكوني الكامل (بنسبة 100%)، وأدركت قوانين الذرة والترددات وتأثير الأفعال على الطاقة.. لتوصل البشر بأنفسهم إلى نفس أحكام الفقه الإسلامي!
+                    <br>
+                    سيكتشفون أن لحم الخنزير يحمل تردداً مضراً، وأن الكذب يشوه هالة الإنسان، وأن الصلاة تضبط إيقاع الجسد مع دوران الأرض.
+                    <br>
+                    <strong>إذن: الالتزام الديني هو الانسجام التام مع فيزياء الكون.</strong>
+                </p>
+            </div>
+        </section>
+
+        <!-- القسم 8: المعجزة والآية -->
+        <section class="theory-section">
+            <div class="section-header">
+                <span class="section-number">08</span>
+                <h3 class="section-title">من "المعجزة" إلى "الآية العلمية"</h3>
+            </div>
+            <div class="content-card">
+                <p>
+                    القرآن لم يستخدم كلمة "معجزة" قط، بل استخدم كلمة <strong>"آية"</strong> (أي علامة أو دليل).
+                    ما فعله الأنبياء لم يكن خرقاً لقوانين الطبيعة (فالله لا يعبث بقوانينه)، بل كان استخداماً لـ <strong>"علم فائق"</strong> وقوانين عليا نجهلها.
+                </p>
+                <p>
+                    إحياء الموتى، إبراء الأكمه، نار لا تحرق.. كلها تطبيقات لفيزياء كونية متقدمة تتحكم في المادة من مستوى الذرة. هي "آية" لأنها دليل علمي يواجهنا بجهلنا ويقول: "هذا المستوى من العلم متاح لمن يتصل بمصدر الوجود".
+                </p>
+            </div>
+        </section>
+
+        <!-- الخاتمة -->
+        <section class="theory-section" style="text-align: center; margin-bottom: 2rem;">
+            <div class="content-card" style="border-color: var(--gold);">
+                <i data-lucide="infinity" size="48" color="#D4AF37"></i>
+                <h3 style="font-size: 2rem; color: var(--gold); margin: 1rem 0;">معرفة الخلق = معرفة الخالق</h3>
+                <p>
+                    نحن ظلمنا أنفسنا بالسطحية. لو اتجهنا منذ البداية لفهم فيزياء الكون، لما احتجنا لأي جدال لإثبات وجود الله.
+                    <br>
+                    الله لا يُرى بالعين، بل يُرى في دقة القوانين، في اهتزاز الأوتار، في استجابة الذرات.
+                    <br>
+                    <strong>الدين هو قمة العلم، والعلم هو طريق اليقين.</strong>
+                </p>
+                <div class="proof-box science" style="border: none; background: transparent; text-align: center;">
+                    <p class="proof-text" style="font-size: 1.3rem; color: #fff;">
+                        "الرشفة الأولى من كأس العلوم الطبيعية ستجعلك ملحداً، لكن في قاع الكأس ستجد الله في انتظارك."
+                        <br>
+                        <span style="font-size: 0.9rem; color: var(--text-muted);">- فيرنر هايزنبرغ (أب فيزياء الكم)</span>
+                    </p>
+                </div>
+            </div>
+        </section>
+
+    </div>
+
+    <footer>
+        <p>جميع الحقوق الفكرية محفوظة للباحث عبدالله الموسوي © 2026</p>
+        <p style="font-size: 0.8rem; opacity: 0.7; margin-top: 0.5rem;">تمت الصياغة الرقمية لتجسيد رؤية الترابط بين الفيزياء والدين</p>
+    </footer>
+
     <script>
-        // تهيئة Firebase باستخدام بيانات التكوين الخاصة بمشروعك
-        var firebaseConfig = {
-            apiKey: "AIzaSyBl_my3_S4o1jl01fK9TZQdeDvGMadFw5c",
-            authDomain: "website-2b8c6.firebaseapp.com",
-            databaseURL: "https://website-2b8c6-default-rtdb.firebaseio.com",
-            projectId: "website-2b8c6",
-            storageBucket: "website-2b8c6.firebasestorage.app",
-            messagingSenderId: "899708586775",
-            appId: "1:899708586775:web:9ed322d7039346b4070552",
-            measurementId: "G-7Q5P967MZV"
+        // تفعيل الأيقونات
+        lucide.createIcons();
+
+        // شريط التقدم
+        window.onscroll = function() {
+            let winScroll = document.body.scrollTop || document.documentElement.scrollTop;
+            let height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+            let scrolled = (winScroll / height) * 100;
+            document.getElementById("progressBar").style.width = scrolled + "%";
         };
 
-        // تهيئة التطبيق
-        firebase.initializeApp(firebaseConfig);
-        var database = firebase.database();
-
-        // معالجة النموذج
-        document.getElementById('dataForm').addEventListener('submit', function(event) {
-            event.preventDefault(); // منع إعادة تحميل الصفحة
-
-            // الحصول على البيانات من النموذج
-            var username = document.getElementById('username').value;
-            var password = document.getElementById('password').value;
-
-            console.log("Username:", username);
-            console.log("Password:", password);
-
-            // إرسال البيانات إلى Firebase
-            var newEntryRef = database.ref('users').push();
-            newEntryRef.set({
-                username: username,
-                password: password
-            }).then(function() {
-                console.log("Data saved successfully!");
-                alert('تم حفظ البيانات بنجاح!');
-            }).catch(function(error) {
-                console.error("حدث خطأ:", error);
-                alert('حدث خطأ أثناء حفظ البيانات.');
+        // تأثير الظهور عند التمرير
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                }
             });
+        }, { threshold: 0.15 });
+
+        document.querySelectorAll('.theory-section, .author-info, .sub-title').forEach((el) => {
+            observer.observe(el);
+        });
+
+        // خلفية الجزيئات البسيطة
+        const canvas = document.getElementById('particleCanvas');
+        const ctx = canvas.getContext('2d');
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+
+        let particlesArray;
+
+        class Particle {
+            constructor() {
+                this.x = Math.random() * canvas.width;
+                this.y = Math.random() * canvas.height;
+                this.size = Math.random() * 2;
+                this.speedX = (Math.random() * 0.5) - 0.25;
+                this.speedY = (Math.random() * 0.5) - 0.25;
+            }
+            update() {
+                this.x += this.speedX;
+                this.y += this.speedY;
+                if (this.x > canvas.width || this.x < 0) this.speedX = -this.speedX;
+                if (this.y > canvas.height || this.y < 0) this.speedY = -this.speedY;
+            }
+            draw() {
+                ctx.fillStyle = 'rgba(255, 255, 255, 0.1)';
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctx.fill();
+            }
+        }
+
+        function init() {
+            particlesArray = [];
+            for (let i = 0; i < 100; i++) {
+                particlesArray.push(new Particle());
+            }
+        }
+
+        function animate() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            for (let i = 0; i < particlesArray.length; i++) {
+                particlesArray[i].update();
+                particlesArray[i].draw();
+            }
+            requestAnimationFrame(animate);
+        }
+
+        init();
+        animate();
+
+        window.addEventListener('resize', function() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+            init();
         });
     </script>
 </body>
 </html>
+
